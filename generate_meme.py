@@ -32,10 +32,13 @@ display type in Noto Sans Light ("the larger, the lighter"), small
 labels in DejaVu Sans Mono Bold. No gradients, no rounded cards, no
 shadows, no decoration that explains nothing.
 
-v3.1: Lucia & Jason join as original flat-vector busts in the empty
-band right of "AGAIN." and below the PAID stamp (draw_characters),
-same palette plus a light pink skin tint -- no official artwork
-copied, no text covered.
+v3.3: Lucia & Jason redrawn FROM the official references (Rockstar
+Lucia portrait, Jason hero render, duo key art -- studied, never
+pasted or traced): Lucia's signature HIGH PONYTAIL with a wavy
+cascade + stern angled brows + hoops + chain; Jason's short
+sandy-blonde faded cut, visible eyes, solid dark stubble band on
+the squared jaw (draw_characters). Same palette, same band, no
+text covered.
 
 Deterministic: fixed coordinates, fixed fonts, no randomness, no
 network. Re-running produces the same bytes.
@@ -122,71 +125,144 @@ def draw_stamp(img):
 
 
 def draw_characters(img):
-    """Lucia & Jason -- original flat vector busts (v3.1).
+    """Lucia & Jason -- original flat vector busts (v3.3).
 
     Drawn from scratch in code (Pillow primitives only) in the same
-    palette -- GTA pink #D1006B, ink black, paper off-white, plus a
-    light pink tint for skin derived from the accent. NOT a copy of
-    any official Rockstar artwork: no key art, no screenshot, no
-    traced image -- just two simple bust silhouettes (long hair +
-    pink top for Lucia; cap + sunglasses + beard for Jason) with a
-    small pink Vice City sun between them.
+    palette -- GTA pink #D1006B, ink black, paper off-white, plus
+    skin tints derived from the accent family. NOT a copy of any
+    official Rockstar artwork: no key art, no screenshot, no traced
+    image -- the likeness comes from STUDYING the official
+    references (Rockstar's Lucia portrait + Jason hero render + duo
+    key art, viewed in /tmp only, never pasted or traced) and
+    rebuilding the two signature silhouettes in code:
+
+    - Lucia (left): HIGH PONYTAIL -- hair swept up into a knot at
+      the crown, a wavy cascade falling past her shoulder on one
+      side, loose strands framing the face; tan skin, brows angled
+      down toward the nose (stern), full closed lips, pink hoop
+      earrings, thin pink chain with pendant, dark tank top.
+    - Jason (right): short SANDY BLONDE hair, faded sides, textured
+      top swept back, NO cap and NO sunglasses over the eyes (eyes
+      visible); heavy straight brows, squared jaw, DARK STUBBLE
+      filled along the whole jaw/chin (a solid band, not a ring),
+      serious closed mouth, black shirt with a pink open collar.
 
     Placement: the empty band right of "AGAIN." and below the PAID
-    stamp. Measured from the v3 render: the stamp's bottom edge
-    slopes from y~352 (x=660) to y~309 (x=960), and the ledger
-    header starts at y=452 -- so the busts live in y 342..446,
-    x 672..954, touching no text at all.
+    stamp. The stamp's bottom edge slopes from y~352 (x=660) to
+    y~309 (x=960), and the ledger header starts at y=452 -- so
+    the busts live in y 342..446, x 672..954, touching no text.
     """
     draw = ImageDraw.Draw(img, "RGBA")
-    SKIN = (242, 211, 224)  # light pink tint, accent family
+    SKIN_LUCIA = (199, 147, 108)   # tan / sawo matang
+    SKIN_JASON = (235, 195, 170)   # tanned, warmer than v3.2
+    BLONDE = (208, 172, 100)       # sandy blonde
+    BLONDE_DARK = (178, 142, 72)   # blonde shading strokes
+    STUBBLE = (96, 70, 44)         # dark stubble (jaw/chin band)
+    NOSE_J = (205, 160, 135)
+    NOSE_L = (150, 105, 70)
+
+    # ---- Lucia (left, centre x=738) ----------------------------------
+    # hair pulled back: swept-up mass behind the head
+    draw.ellipse([700, 352, 776, 410], fill=INK)
+    # dark tank top (thin straps) + neck
+    draw.rectangle([729, 420, 747, 436], fill=SKIN_LUCIA)
+    draw.polygon([(680, 446), (694, 422), (714, 414),
+                  (762, 414), (782, 422), (796, 446)], fill=INK)
+    # face (oval)
+    draw.ellipse([710, 366, 766, 430], fill=SKIN_LUCIA)
+    # swept hairline: hair pulled back off the forehead, high at the
+    # centre, dipping at the temples
+    draw.polygon([(706, 382), (714, 360), (738, 354), (762, 360),
+                  (770, 382), (760, 372), (738, 366), (716, 372)],
+                 fill=INK)
+    # high ponytail knot at the crown (kept just below the stamp edge)
+    draw.ellipse([726, 342, 756, 368], fill=INK)
+    draw.ellipse([735, 358, 747, 366], fill=ACCENT)
+    # wavy cascade falling past the shoulder on her left side
+    # (overlapping ellipses = wavy edge)
+    draw.ellipse([682, 368, 708, 408], fill=INK)
+    draw.ellipse([678, 396, 704, 434], fill=INK)
+    draw.ellipse([684, 422, 710, 448], fill=INK)
+    # one loose curl on her right side, near the shoulder
+    draw.ellipse([760, 394, 780, 430], fill=INK)
+    # thin strands framing the face
+    draw.polygon([(706, 374), (714, 374), (712, 402), (706, 402)],
+                 fill=INK)
+    draw.polygon([(762, 374), (770, 374), (770, 402), (764, 402)],
+                 fill=INK)
+    # stern brows angled DOWN toward the nose, heavy-lashed eyes,
+    # nose, full closed lips, hoop earrings, chain + pendant
+    draw.line([717, 386, 733, 390], fill=INK, width=4)
+    draw.line([759, 386, 743, 390], fill=INK, width=4)
+    draw.line([718, 391, 732, 391], fill=INK, width=2)
+    draw.line([744, 391, 758, 391], fill=INK, width=2)
+    draw.ellipse([720, 393, 728, 399], fill=INK)
+    draw.ellipse([748, 393, 756, 399], fill=INK)
+    draw.ellipse([722, 394, 724, 396], fill=PAPER)
+    draw.ellipse([750, 394, 752, 396], fill=PAPER)
+    draw.line([738, 401, 737, 409], fill=NOSE_L, width=2)
+    draw.ellipse([729, 413, 747, 421], fill=ACCENT)
+    draw.ellipse([733, 414, 736, 416], fill=PAPER)
+    draw.ellipse([701, 402, 709, 410], outline=ACCENT, width=2)
+    draw.ellipse([767, 402, 775, 410], outline=ACCENT, width=2)
+    draw.arc([706, 424, 770, 452], start=15, end=165,
+             fill=ACCENT, width=2)
+    draw.ellipse([735, 442, 741, 448], fill=ACCENT)
 
     # ---- Vice City sun (small, between the two heads) ---------------
     draw.ellipse([796, 350, 828, 382], fill=ACCENT)
 
-    # ---- Lucia (left, centre x=738) ----------------------------------
-    # hair back mass
-    draw.ellipse([676, 358, 800, 446], fill=INK)
-    # neck + pink top (shoulders)
-    draw.rectangle([729, 404, 747, 422], fill=SKIN)
-    draw.polygon([(676, 446), (690, 420), (712, 410),
-                  (764, 410), (786, 420), (800, 446)], fill=ACCENT)
-    # face
-    draw.ellipse([708, 362, 768, 430], fill=SKIN)
-    # fringe over forehead
-    draw.ellipse([702, 350, 774, 380], fill=INK)
-    draw.ellipse([708, 362, 768, 430], fill=SKIN)
-    # side locks framing the face
-    draw.ellipse([696, 362, 716, 424], fill=INK)
-    draw.ellipse([760, 362, 780, 424], fill=INK)
-    # eyes, lips, earring
-    draw.ellipse([721, 390, 727, 396], fill=INK)
-    draw.ellipse([745, 390, 751, 396], fill=INK)
-    draw.ellipse([729, 411, 743, 417], fill=ACCENT)
-    draw.ellipse([700, 408, 706, 414], fill=ACCENT)
-
     # ---- Jason (right, centre x=898) ---------------------------------
-    # dark shirt (shoulders)
+    # short sandy-blonde hair: faded sides, textured top swept back,
+    # NO cap so the blond hair shows
+    draw.ellipse([862, 346, 934, 392], fill=BLONDE)
+    # neck + black shirt with pink open collar
+    draw.rectangle([889, 412, 907, 424], fill=SKIN_JASON)
     draw.polygon([(842, 446), (856, 426), (880, 416),
                   (916, 416), (940, 426), (954, 446)], fill=INK)
-    # neck + face
-    draw.rectangle([889, 408, 907, 420], fill=SKIN)
-    draw.ellipse([868, 364, 928, 432], fill=SKIN)
-    # beard along the jaw (thin, so cheek skin still shows)
-    draw.arc([866, 392, 930, 436], start=15, end=165,
-             fill=INK, width=9)
-    # sunglasses: two separate lenses + bridge (not one mask bar),
-    # with two glints
-    draw.rounded_rectangle([870, 389, 894, 403], radius=6, fill=INK)
-    draw.rounded_rectangle([902, 389, 926, 403], radius=6, fill=INK)
-    draw.line([894, 395, 902, 395], fill=INK, width=3)
-    draw.ellipse([877, 392, 882, 397], fill=PAPER)
-    draw.ellipse([909, 392, 914, 397], fill=PAPER)
-    # cap: pink dome + ink brim + white button (pink breaks up the
-    # black mass so the head reads as a cap, not a burglar mask)
-    draw.ellipse([864, 342, 932, 378], fill=ACCENT)
-    draw.rounded_rectangle([856, 366, 940, 380], radius=7, fill=INK)
-    draw.ellipse([894, 340, 902, 348], fill=PAPER)
+    draw.line([884, 418, 898, 432], fill=ACCENT, width=3)
+    draw.line([912, 418, 898, 432], fill=ACCENT, width=3)
+    # face with a squared jaw (strong jawline)
+    draw.ellipse([868, 362, 928, 432], fill=SKIN_JASON)
+    draw.polygon([(872, 408), (924, 408), (920, 432),
+                  (876, 432)], fill=SKIN_JASON)
+    # short fringe: hair only on top, then the face redrawn so the
+    # forehead shows and the sides stay faded (skin)
+    draw.ellipse([864, 346, 932, 376], fill=BLONDE)
+    draw.ellipse([868, 370, 928, 432], fill=SKIN_JASON)
+    draw.polygon([(872, 408), (924, 408), (920, 432),
+                  (876, 432)], fill=SKIN_JASON)
+    # swept-back texture strokes on top + short sideburns
+    draw.arc([880, 348, 914, 368], start=200, end=340,
+             fill=BLONDE_DARK, width=2)
+    draw.line([884, 352, 906, 350], fill=BLONDE_DARK, width=2)
+    draw.line([890, 356, 912, 354], fill=BLONDE_DARK, width=2)
+    draw.rectangle([866, 378, 873, 400], fill=BLONDE)
+    draw.rectangle([923, 378, 930, 400], fill=BLONDE)
+    # heavy straight brows, VISIBLE deep-set eyes (no sunglasses
+    # over them), nose
+    draw.line([876, 390, 893, 392], fill=INK, width=4)
+    draw.line([920, 390, 903, 392], fill=INK, width=4)
+    draw.line([877, 394, 892, 394], fill=INK, width=2)
+    draw.line([904, 394, 919, 394], fill=INK, width=2)
+    draw.ellipse([880, 396, 887, 402], fill=INK)
+    draw.ellipse([909, 396, 916, 402], fill=INK)
+    draw.ellipse([882, 397, 884, 399], fill=PAPER)
+    draw.ellipse([911, 397, 913, 399], fill=PAPER)
+    draw.line([897, 402, 896, 411], fill=NOSE_J, width=2)
+    # stubble: LIGHT shadow over the jaw/chin -- drawn on its own
+    # layer with alpha so skin shows through (short stubble, NOT a
+    # solid beard); the band starts below the nose (y=414), then the
+    # mouth is redrawn on top of it
+    stubble_layer = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    sd = ImageDraw.Draw(stubble_layer)
+    sd.pieslice([870, 392, 926, 436], start=0, end=180,
+                fill=STUBBLE + (150,))
+    sd.ellipse([878, 420, 881, 423], fill=STUBBLE + (150,))
+    sd.ellipse([915, 420, 918, 423], fill=STUBBLE + (150,))
+    img.alpha_composite(stubble_layer)
+    draw = ImageDraw.Draw(img, "RGBA")
+    draw.line([889, 419, 907, 419], fill=(120, 55, 55), width=3)
 
 
 def main():
