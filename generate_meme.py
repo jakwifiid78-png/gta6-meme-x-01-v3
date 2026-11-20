@@ -32,6 +32,11 @@ display type in Noto Sans Light ("the larger, the lighter"), small
 labels in DejaVu Sans Mono Bold. No gradients, no rounded cards, no
 shadows, no decoration that explains nothing.
 
+v3.1: Lucia & Jason join as original flat-vector busts in the empty
+band right of "AGAIN." and below the PAID stamp (draw_characters),
+same palette plus a light pink skin tint -- no official artwork
+copied, no text covered.
+
 Deterministic: fixed coordinates, fixed fonts, no randomness, no
 network. Re-running produces the same bytes.
 
@@ -116,6 +121,74 @@ def draw_stamp(img):
     img.alpha_composite(layer, (628, 138))
 
 
+def draw_characters(img):
+    """Lucia & Jason -- original flat vector busts (v3.1).
+
+    Drawn from scratch in code (Pillow primitives only) in the same
+    palette -- GTA pink #D1006B, ink black, paper off-white, plus a
+    light pink tint for skin derived from the accent. NOT a copy of
+    any official Rockstar artwork: no key art, no screenshot, no
+    traced image -- just two simple bust silhouettes (long hair +
+    pink top for Lucia; cap + sunglasses + beard for Jason) with a
+    small pink Vice City sun between them.
+
+    Placement: the empty band right of "AGAIN." and below the PAID
+    stamp. Measured from the v3 render: the stamp's bottom edge
+    slopes from y~352 (x=660) to y~309 (x=960), and the ledger
+    header starts at y=452 -- so the busts live in y 342..446,
+    x 672..954, touching no text at all.
+    """
+    draw = ImageDraw.Draw(img, "RGBA")
+    SKIN = (242, 211, 224)  # light pink tint, accent family
+
+    # ---- Vice City sun (small, between the two heads) ---------------
+    draw.ellipse([796, 350, 828, 382], fill=ACCENT)
+
+    # ---- Lucia (left, centre x=738) ----------------------------------
+    # hair back mass
+    draw.ellipse([676, 358, 800, 446], fill=INK)
+    # neck + pink top (shoulders)
+    draw.rectangle([729, 404, 747, 422], fill=SKIN)
+    draw.polygon([(676, 446), (690, 420), (712, 410),
+                  (764, 410), (786, 420), (800, 446)], fill=ACCENT)
+    # face
+    draw.ellipse([708, 362, 768, 430], fill=SKIN)
+    # fringe over forehead
+    draw.ellipse([702, 350, 774, 380], fill=INK)
+    draw.ellipse([708, 362, 768, 430], fill=SKIN)
+    # side locks framing the face
+    draw.ellipse([696, 362, 716, 424], fill=INK)
+    draw.ellipse([760, 362, 780, 424], fill=INK)
+    # eyes, lips, earring
+    draw.ellipse([721, 390, 727, 396], fill=INK)
+    draw.ellipse([745, 390, 751, 396], fill=INK)
+    draw.ellipse([729, 411, 743, 417], fill=ACCENT)
+    draw.ellipse([700, 408, 706, 414], fill=ACCENT)
+
+    # ---- Jason (right, centre x=898) ---------------------------------
+    # dark shirt (shoulders)
+    draw.polygon([(842, 446), (856, 426), (880, 416),
+                  (916, 416), (940, 426), (954, 446)], fill=INK)
+    # neck + face
+    draw.rectangle([889, 408, 907, 420], fill=SKIN)
+    draw.ellipse([868, 364, 928, 432], fill=SKIN)
+    # beard along the jaw (thin, so cheek skin still shows)
+    draw.arc([866, 392, 930, 436], start=15, end=165,
+             fill=INK, width=9)
+    # sunglasses: two separate lenses + bridge (not one mask bar),
+    # with two glints
+    draw.rounded_rectangle([870, 389, 894, 403], radius=6, fill=INK)
+    draw.rounded_rectangle([902, 389, 926, 403], radius=6, fill=INK)
+    draw.line([894, 395, 902, 395], fill=INK, width=3)
+    draw.ellipse([877, 392, 882, 397], fill=PAPER)
+    draw.ellipse([909, 392, 914, 397], fill=PAPER)
+    # cap: pink dome + ink brim + white button (pink breaks up the
+    # black mass so the head reads as a cap, not a burglar mask)
+    draw.ellipse([864, 342, 932, 378], fill=ACCENT)
+    draw.rounded_rectangle([856, 366, 940, 380], radius=7, fill=INK)
+    draw.ellipse([894, 340, 902, 348], fill=PAPER)
+
+
 def main():
     img = Image.new("RGB", (W, H), PAPER).convert("RGBA")
     draw = ImageDraw.Draw(img, "RGBA")
@@ -184,6 +257,10 @@ def main():
 
     # ---- Stamp (empty space right of the headline) ----------------------
     draw_stamp(img)
+    draw = ImageDraw.Draw(img, "RGBA")
+
+    # ---- Lucia & Jason busts (band below the stamp, right of AGAIN.) ---
+    draw_characters(img)
     draw = ImageDraw.Draw(img, "RGBA")
 
     # ---- Footer: black block, ghost + make.fun + punchline --------------
